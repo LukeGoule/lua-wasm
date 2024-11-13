@@ -1,0 +1,6 @@
+[submodule "lua_src"]
+	path = lua_src
+	url = https://github.com/lua/lua.git
+[submodule "emsdk"]
+	path = emsdk
+	url = https://github.com/emscripten-core/emsdk.git

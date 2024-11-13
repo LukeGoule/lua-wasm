@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="./build/lua.js"></script>
+    <script>
+        Module.onRuntimeInitialized = async () => {
+            const jsString = `
+            function complex_test_function(input_string, number)
+                -- String Manipulation
+                print("Original String:", input_string)
+                local reversed = string.reverse(input_string)
+                print("Reversed String:", reversed)
+
+                local upper_case = string.upper(input_string)
+                print("Uppercase String:", upper_case)
+
+                local pattern_count = select(2, string.gsub(input_string, "[aeiouAEIOU]", ""))
+                print("Number of vowels in the string:", pattern_count)
+
+                -- Math Operations
+                print("Original Number:", number)
+                local square_root = math.sqrt(number)
+                print("Square Root:", square_root)
+
+                local random_num = math.random(1, 100)
+                print("Random Number between 1 and 100:", random_num)
+
+                -- Table Manipulation
+                local numbers = {5, 3, 8, 1, 4}
+                print("Original Table:", table.concat(numbers, ", "))
+
+                table.sort(numbers)
+                print("Sorted Table:", table.concat(numbers, ", "))
+
+                table.insert(numbers, number)
+                print("Table after Insertion:", table.concat(numbers, ", "))
+
+                local max_value = math.max(table.unpack(numbers))
+                print("Max Value in Table:", max_value)
+
+                -- File Operations
+                local file_name = "output.txt"
+                local file, err = io.open(file_name, "w")
+                if not file then
+                    print("Error opening file:", err)
+                    return
+                end
+
+                file:write("Complex Test Function Output\\n")
+                file:write("Original String: ", input_string, "\\n")
+                file:write("Reversed String: ", reversed, "\\n")
+                file:write("Uppercase String: ", upper_case, "\\n")
+                file:write("Number of Vowels: ", pattern_count, "\\n")
+                file:write("Square Root: ", square_root, "\\n")
+                file:write("Random Number between 1 and 100: ", random_num, "\\n")
+                file:write("Sorted Table: ", table.concat(numbers, ", "), "\\n")
+                file:write("Max Value in Table: ", max_value, "\\n")
+                
+                file:close()
+                print("Results have been written to", file_name)
+
+                -- Return final results in a table
+                return {
+                    reversed_string = reversed,
+                    upper_case_string = upper_case,
+                    vowel_count = pattern_count,
+                    square_root = square_root,
+                    cube = exponent,
+                    random_number = random_num,
+                    sorted_table = numbers,
+                    max_value = max_value,
+                }
+            end
+
+            complex_test_function("A string here.", 123456789)
+            `;
+            console.log("runstring: ", jsString);
+            
+            // Allocate memory for JS string.
+            const messagePtr = Module._malloc(jsString.length + 1);
+
+            console.log('messagePtr', messagePtr);
+
+            // Convert string to UTF8
+            Module.stringToUTF8(jsString, messagePtr, jsString.length + 1);
+
+            // Execute Lua.
+            Module._runstring(messagePtr);
+
+            // Free memory.
+            Module._free(messagePtr);
+        };
+    </script>
+</head>
+<body>
+    
+</body>
+</html>
